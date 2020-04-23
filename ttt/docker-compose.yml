@@ -1,0 +1,21 @@
+version: '3'
+services:
+  ttt:
+    build: .
+    container_name: ttt
+    command: bash
+    tty: true
+    stdin_open: true
+    user: app
+    volumes:
+      - .:/usr/src/app
+      - ttt_bundle:/bundle
+    ports:
+      - "4567:4567"
+      - "35730:35730"
+    environment:
+      TZ: America/New_York
+
+volumes:
+  ttt_bundle:
+    external: true

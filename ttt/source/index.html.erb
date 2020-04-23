@@ -1,0 +1,257 @@
+---
+title: Tic Tac Toe
+---
+<h1>Tic Tac Toe</h1>
+<p>O Player Name: <input id="player-o"></p>
+<p>X Player Name: <input id="player-x"></p>
+<section>
+  <button id="start-stop" onclick="startGame()">Start Game</button>
+</section>
+<br>
+<main>
+  <section>
+    <p id="instruction">Fill out the names and press the Start Game button.</p>
+  </section>
+  <section id="game-buttons">
+    <section>
+      <button style="height:40px;width:40px" id="top-left" onclick="markButton()" disabled>-</button>
+      <button style="height:40px;width:40px" id="top-middle" onclick="markButton()" disabled>-</button>
+      <button style="height:40px;width:40px" id="top-right" onclick="markButton()" disabled>-</button>
+    </section>
+    <section>
+      <button style="height:40px;width:40px" id="middle-left" onclick="markButton()" disabled>-</button>
+      <button style="height:40px;width:40px" id="middle-middle" onclick="markButton()" disabled>-</button>
+      <button style="height:40px;width:40px" id="middle-right" onclick="markButton()" disabled>-</button>
+    </section>
+    <section>
+      <button style="height:40px;width:40px" id="bottom-left" onclick="markButton()" disabled>-</button>
+      <button style="height:40px;width:40px" id="bottom-middle" onclick="markButton()" disabled>-</button>
+      <button style="height:40px;width:40px" id="bottom-right" onclick="markButton()" disabled>-</button>
+    </section>
+  </section>
+</main>
+
+<script>
+// NOTE: game start functions
+function startGame() {
+  disablePlayerInputs();
+  changeButtonToStopGame();
+  showPlayerXInstructions();
+  enableGameButtons();
+}
+function disablePlayerInputs() {
+  let player_o_input = document.getElementById("player-o");
+  let player_x_input = document.getElementById("player-x");
+
+  player_o_input.disabled = true;
+  player_x_input.disabled = true;
+}
+function changeButtonToStopGame() {
+  let start_stop_button = document.getElementById("start-stop");
+
+  start_stop_button.setAttribute("onclick", "stopGame()");
+  start_stop_button.innerText = "Stop Game";
+}
+function showPlayerXInstructions() {
+  let instruction = document.getElementById("instruction");
+  let player_x_input = document.getElementById("player-x");
+
+  instruction.innerText = `${player_x_input.value}'s Turn [X]`;
+}
+function showPlayerOInstructions() {
+  let instruction = document.getElementById("instruction");
+  let player_o_input = document.getElementById("player-o");
+
+  instruction.innerText = `${player_o_input.value}'s Turn [O]`;
+}
+function enableGameButtons() {
+  let game_buttons = document.getElementById("game-buttons").getElementsByTagName("button");
+  for (let button of game_buttons) {
+    button.disabled = false;
+  }
+}
+
+// NOTE: game stop functions -- reset to how things were
+function stopGame() {
+  enablePlayerInputs();
+  changeButtonToStartGame();
+  showGameInstructions();
+  disableGameButtons();
+}
+function enablePlayerInputs() {
+  let player_o_input = document.getElementById("player-o");
+  let player_x_input = document.getElementById("player-x");
+
+  player_o_input.disabled = false;
+  player_x_input.disabled = false;
+
+}
+function changeButtonToStartGame() {
+  let start_stop_button = document.getElementById("start-stop");
+
+  start_stop_button.setAttribute("onclick", "startGame()");
+  start_stop_button.innerText = "Start Game";
+  
+}
+function showGameInstructions() {
+  let instruction = document.getElementById("instruction");
+  let player_x_input = document.getElementById("player-x");
+
+  instruction.innerText = "Fill out the names and press the Start Game button.";
+  
+}
+function disableGameButtons() {
+  let game_buttons = document.getElementById("game-buttons").getElementsByTagName("button");
+  for (let button of game_buttons) {
+    button.disabled = true;
+    button.innerText = '-';
+  }
+}
+
+// NOTE: game functions -- battle of the brains.
+let line_one = [
+  document.getElementById("top-left"),
+  document.getElementById("top-middle"),
+  document.getElementById("top-right")
+];
+
+let line_two = [
+  document.getElementById("middle-left"),
+  document.getElementById("middle-middle"),
+  document.getElementById("middle-right")
+];
+
+let line_three = [
+  document.getElementById("bottom-left"),
+  document.getElementById("bottom-middle"),
+  document.getElementById("bottom-right")
+];
+
+let line_four = [
+  document.getElementById("top-left"),
+  document.getElementById("middle-left"),
+  document.getElementById("bottom-left")
+];
+
+let line_five = [
+  document.getElementById("top-middle"),
+  document.getElementById("middle-middle"),
+  document.getElementById("bottom-middle")
+];
+
+let line_six = [
+  document.getElementById("top-right"),
+  document.getElementById("middle-right"),
+  document.getElementById("bottom-right")
+];
+
+let line_seven = [
+  document.getElementById("top-left"),
+  document.getElementById("middle-middle"),
+  document.getElementById("bottom-right")
+];
+
+let line_eight = [
+  document.getElementById("top-right"),
+  document.getElementById("middle-middle"),
+  document.getElementById("bottom-left")
+];
+
+let all_lines = [
+  line_one,
+  line_two,
+  line_three,
+  line_four,
+  line_five,
+  line_six,
+  line_seven,
+  line_eight
+];
+
+function checkLines() {
+  for (let line in all_lines) {
+    let first = all_lines[line][0];
+    let second = all_lines[line][1];
+    let third = all_lines[line][2];
+    
+    if (first.innerText == second.innerText
+      && first.innerText == third.innerText
+      && first.innerText != '-'
+      && second.innerText != '-'
+      && third.innerText != '-') {
+      
+      return true;
+    }
+  }
+  return false;
+}
+
+function markButtonWithX() {
+  showPlayerOInstructions();
+
+  let button = window.event.target;
+  button.disabled = true;
+  button.innerText = 'X';
+
+  let game_buttons = document.getElementById("game-buttons").getElementsByTagName("button");
+  for (let game_button of game_buttons) {
+    game_button.setAttribute("onclick", "markButtonWithO()");
+  }
+
+  if (checkLines()) {
+    finishGame();
+  }
+}
+function markButtonWithO() {
+  showPlayerXInstructions();
+
+  let button = window.event.target;
+  button.disabled = true;
+  button.innerText = 'O';
+
+  let game_buttons = document.getElementById("game-buttons").getElementsByTagName("button");
+  for (let game_button of game_buttons) {
+    game_button.setAttribute("onclick", "markButtonWithX()");
+  }
+
+  if (checkLines()) {
+    finishGame();
+  }
+}
+function markButton() {
+  markButtonWithX();
+}
+function finishGame() {
+  let instruction = document.getElementById("instruction");
+  let start_stop_button = document.getElementById("start-stop");
+  let player_input;
+  let game_buttons = document.getElementById("game-buttons").getElementsByTagName("button");
+    
+  for (let line in all_lines) {
+    let first = all_lines[line][0];
+    let second = all_lines[line][1];
+    let third = all_lines[line][2];
+    
+    if (first.innerText == second.innerText
+      && first.innerText == third.innerText
+      && first.innerText != '-'
+      && second.innerText != '-'
+      && third.innerText != '-') {
+      
+      if (first.innerText == "X") {
+        player_input = document.getElementById("player-x");
+      } else if (first.innerText == "O") {
+        player_input = document.getElementById("player-o");
+      }
+    }
+  }
+
+  instruction.innerText = `${player_input.value} has won the game!`;
+  start_stop_button.innerText = "Reset Game";
+  
+  for (let button of game_buttons) {
+    button.disabled = true;
+    button.setAttribute("onclick", "markButton()");
+  }
+}
+</script>
